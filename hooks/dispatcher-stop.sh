@@ -12,7 +12,14 @@
 set -o pipefail
 
 REPO_ROOT="${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || echo ".")}"
-HOOK_LOG="$REPO_ROOT/holding/hooks/hook-log.jsonl"
+# Portable log path (v0.2.1 2026-04-19): write to .claude/logs/ so external
+# installs work. Falls back to holding/hooks/ for the Asawa monorepo layout.
+if [ -d "$REPO_ROOT/holding/hooks" ]; then
+  HOOK_LOG="$REPO_ROOT/holding/hooks/hook-log.jsonl"
+else
+  mkdir -p "$REPO_ROOT/.claude/logs" 2>/dev/null
+  HOOK_LOG="$REPO_ROOT/.claude/logs/hook-fires.jsonl"
+fi
 
 # Stop hooks receive JSON on stdin (transcript_path, session_id, etc.).
 # Capture once at dispatcher entry so downstream sections (triage-collector)

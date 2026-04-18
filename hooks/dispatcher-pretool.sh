@@ -11,7 +11,16 @@
 # ═══════════════════════════════════════════════════════════════════════════════
 
 REPO_ROOT="${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || echo ".")}"
-HOOK_LOG="$REPO_ROOT/holding/hooks/hook-log.jsonl"
+# Portable log path (v0.2.1 2026-04-19): write to .claude/logs/ so external
+# installs work. Falls back to holding/hooks/ for the Asawa monorepo layout
+# where the dir already exists — preserves backward compat with the canonical
+# source-of-truth tree.
+if [ -d "$REPO_ROOT/holding/hooks" ]; then
+  HOOK_LOG="$REPO_ROOT/holding/hooks/hook-log.jsonl"
+else
+  mkdir -p "$REPO_ROOT/.claude/logs" 2>/dev/null
+  HOOK_LOG="$REPO_ROOT/.claude/logs/hook-fires.jsonl"
+fi
 FILE_PATH="$TOOL_INPUT_file_path"
 TOOL_NAME="${TOOL_NAME:-}"  # "Edit" or "Write"
 
