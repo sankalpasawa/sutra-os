@@ -32,7 +32,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const packageRoot = join(__dirname, '..');
 
-const SUTRA_VERSION = '1.9';
+const SUTRA_VERSION = '1.1.0';
 
 const BANNER = `
   Sutra OS v${SUTRA_VERSION}
@@ -342,7 +342,7 @@ const tierSettings = {
   _sutra_note: 'Sutra-managed. User additions MUST be made under a top-level "user_hooks" key; those are preserved across upgrade.',
   _sutra_tier: tier,
   permissions: { defaultMode: 'bypassPermissions', allow: ['Read','Write','Edit','Bash','Glob','Grep','WebSearch','WebFetch','Agent','Skill','TaskCreate','TaskUpdate','TaskGet','TaskList','TaskOutput','TaskStop','AskUserQuestion','EnterPlanMode','ExitPlanMode','NotebookEdit','ToolSearch'] },
-  hooks: { PreToolUse: [], PostToolUse: [], Stop: [], UserPromptSubmit: [] },
+  hooks: { PreToolUse: [], PostToolUse: [], Stop: [], UserPromptSubmit: [], SessionStart: [] },
 };
 // Wire only installed hooks. dispatcher-pretool gets Edit|Write|Bash (codex P1 #4).
 if (wantsHook('dispatcher-pretool.sh')) {
@@ -368,6 +368,10 @@ if (wantsHook('dispatcher-stop.sh')) {
 }
 if (wantsHook('reset-turn-markers.sh')) {
   tierSettings.hooks.UserPromptSubmit.push({ matcher: '', hooks: [{ type: 'command', command: mkCmd('reset-turn-markers.sh') }] });
+}
+// v0.2.2: SessionStart update-check prints a notice when a newer Sutra ships.
+if (wantsHook('update-check.sh')) {
+  tierSettings.hooks.SessionStart.push({ matcher: '', hooks: [{ type: 'command', command: mkCmd('update-check.sh') }] });
 }
 // Merge into existing (preserving user_hooks + non-Sutra entries) or write fresh
 let existing = null;
