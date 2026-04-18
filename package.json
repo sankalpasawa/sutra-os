@@ -22,7 +22,8 @@
   "files": [
     "bin/",
     "commands/",
-    "skills/",
+    "hooks/",
+    "os-core/",
     "templates/"
   ],
   "dependencies": {}
