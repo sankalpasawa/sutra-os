@@ -1,6 +1,6 @@
 {
   "name": "sutra-os",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Sutra — Operating system for building companies with AI. One install: gstack + GSD + Sutra.",
   "bin": {
     "sutra": "./bin/install.mjs"

@@ -32,7 +32,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const packageRoot = join(__dirname, '..');
 
-const SUTRA_VERSION = '1.1.0';
+// Single source of truth: read version from package.json at runtime.
+// Keeps install banner + .claude/sutra-version + update-check comparisons aligned.
+const _pkgPath = join(dirname(fileURLToPath(import.meta.url)), '..', 'package.json');
+const SUTRA_VERSION = JSON.parse(readFileSync(_pkgPath, 'utf8')).version;
 
 const BANNER = `
   Sutra OS v${SUTRA_VERSION}

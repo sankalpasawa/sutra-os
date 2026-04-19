@@ -12,6 +12,11 @@ if ! command -v claude >/dev/null 2>&1; then
   exit 0
 fi
 
+# macOS doesn't ship `timeout` by default. Detect + fall back.
+TIMEOUT_CMD=""
+command -v timeout  >/dev/null 2>&1 && TIMEOUT_CMD="timeout 60"
+[ -z "$TIMEOUT_CMD" ] && command -v gtimeout >/dev/null 2>&1 && TIMEOUT_CMD="gtimeout 60"
+
 TEST_DIR="/tmp/sutra-outcome-${TEST_NAME}-$$"
 mkdir -p "$TEST_DIR" && cd "$TEST_DIR"
 echo "  [setup] $TEST_DIR"
@@ -23,7 +28,7 @@ else
 fi
 
 # /sutra-help: should list commands and show version.
-HELP_OUT=$(timeout 60 claude --print "/sutra-help" 2>&1 || echo "FAILED")
+HELP_OUT=$($TIMEOUT_CMD claude --print "/sutra-help" 2>&1 || echo "FAILED")
 echo "$HELP_OUT" | grep -qi "sutra" && _pass "/sutra-help mentions Sutra" \
   || _fail "/sutra-help mentions Sutra"
 echo "$HELP_OUT" | grep -qiE "commands|available" && _pass "/sutra-help lists commands" \
@@ -31,7 +36,7 @@ echo "$HELP_OUT" | grep -qiE "commands|available" && _pass "/sutra-help lists co
 
 # /sutra-update: should reference the installer or update flow.
 # Don't actually run the full install — just verify the command is reachable.
-UPD_OUT=$(timeout 60 claude --print "describe what /sutra-update would do. Do not run it." 2>&1 || echo "FAILED")
+UPD_OUT=$($TIMEOUT_CMD claude --print "describe what /sutra-update would do. Do not run it." 2>&1 || echo "FAILED")
 echo "$UPD_OUT" | grep -qiE "update|install|latest|npx" && _pass "/sutra-update described coherently" \
   || _fail "/sutra-update described coherently"
 

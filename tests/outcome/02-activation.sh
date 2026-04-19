@@ -27,7 +27,11 @@ fi
 
 # Run /sutra via claude --print (skips trust prompt, returns stdout).
 # Timeout guards against unexpected hangs.
-OUT=$(timeout 60 claude --print "/sutra" 2>&1 || echo "CLAUDE_RUN_FAILED")
+# macOS doesn't ship `timeout` by default. Detect + fall back gracefully.
+TIMEOUT_CMD=""
+command -v timeout  >/dev/null 2>&1 && TIMEOUT_CMD="timeout 60"
+[ -z "$TIMEOUT_CMD" ] && command -v gtimeout >/dev/null 2>&1 && TIMEOUT_CMD="gtimeout 60"
+OUT=$($TIMEOUT_CMD claude --print "/sutra" 2>&1 || echo "CLAUDE_RUN_FAILED")
 
 # Assertions on the output.
 echo "  [/sutra output — first 200 chars]"
