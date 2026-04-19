@@ -81,7 +81,7 @@ if (isHelp) {
   What installs:
     1. gstack                — 32 skills (design, QA, ship, review, security)
     2. GSD v1                — 57 skills (plan, execute, verify, debug)
-    3. Sutra commands        — /sutra-onboard, /asawa, /company, /dayflow
+    3. Sutra commands        — /sutra, /sutra-help, /sutra-update, /company
     4. Sutra hooks bundle    — 28 hooks enforcing D27/D28/D9/D12/D13
     5. Settings template     — PreToolUse/PostToolUse/Stop/UserPromptSubmit wiring
     6. OS core docs          — 23 governance documents (os-core → os/)
@@ -89,7 +89,9 @@ if (isHelp) {
     8. Version manifest      — .claude/sutra-version
 
   After install:
-    /sutra-onboard           — Start a new company onboarding
+    /sutra                   — Activate Sutra for this session (CEO day)
+    /sutra-help              — Show commands + install state
+    /sutra-update            — Pull the latest Sutra OS
     /company NAME            — Open a company-scoped session
 `);
   process.exit(0);
@@ -499,6 +501,9 @@ if (isLocal) {
   console.log(`\n  Next steps:`);
   console.log(`    1. Review and customize CLAUDE.md`);
   console.log(`    2. Review os/SUTRA-CONFIG.md for depth and enforcement settings`);
-  console.log(`    3. Open Claude Code in this directory → type /sutra-onboard`);
-  console.log(`\n  Smoke test: bash .claude/hooks/sutra/reset-turn-markers.sh`);
+  console.log(`    3. Open Claude Code in this directory (\`claude\`).`);
+  console.log(`       First open will ask "Trust this folder?" — say yes. It's your folder.`);
+  console.log(`    4. Type /sutra to activate Sutra mode and see your CEO day.`);
+  console.log(`\n  Smoke test:  bash .claude/hooks/sutra/reset-turn-markers.sh`);
+  console.log(`  Help:        type /sutra-help inside Claude Code`);
 }
